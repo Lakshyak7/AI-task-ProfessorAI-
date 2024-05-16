@@ -66,6 +66,7 @@ def main():
     #list of pdfs
     #can be imporved to request a set of PDFs before the chatbot is initialized 
     raw_text = ""
+    #improvments with loading in enitre directories
     # loader = DirectoryLoader("./pdfs/", glob="**/*pdf")
     # documents = loader.load()
     # for i in range(len(documents)):
@@ -76,17 +77,15 @@ def main():
     #split raw_text into chunks to be embeded
     text_chunks = get_text_chunks(raw_text)
 
-    print(len(text_chunks))
-    print(len(raw_text))
-    # print(raw_text)
-    # for i in range(len(text_chunks)):
-    #     print(text_chunks[i])
 
     embeddings = OpenAIEmbeddings()
     # #embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
 
     #storing text_chunks into a vector 
     vectorstore = FAISS.from_texts(text_chunks,embedding=embeddings)
+    chain = get_conversation_chain(vectorstore)
+    chain.invoke("You are a guide for yosemite national park, you are to answer any questions pertaining to the park using only the information provided to you")
+
 
     while True:
         #taking the user input
